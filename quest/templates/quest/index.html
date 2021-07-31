@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% block title %}MHF装備情報集約システム-投稿依頼{% endblock %}
+{% block content %}
+<p>
+  投稿依頼
+</p>
+<a href="{% url 'quest:requestform' %}">依頼する</a>
+<a href="{% url 'quest:requestform' %}">回答する</a>
+
+{% endblock %}

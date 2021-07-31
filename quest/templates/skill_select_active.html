@@ -1,0 +1,73 @@
+{% load custom_filters %}
+<div class="form-group row">
+  <label class="col-lg-3 col-form-label">武器種選択</label>
+  <div class="col-lg-3">
+    <select class="form-control" id="selected_wep_kind" name="wep_kind">
+      <option value="" selected>選択してください</option>
+      {% for wep in wepkind_list %}
+        <option value={{wep.name}}
+            {{wep.name|wepkind_selected:request.GET}}
+            >{{wep.name}}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+<div class="form-row">
+  <div class="col-md-4 mb-3">
+    <label><b>スキル種別</b></label>
+    <div class="skill_type_select0 border">
+      {% for skill_type in skill_type_list %}
+      <div class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input skill_type_select"
+                 type="radio" value="{{skill_type}}" name="skill_type_select"
+                 {{skill_type|skill_type_selected:request.GET}}>
+          {{skill_type}}
+        </label>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-md-8 mb-3">
+    <label><b>スキル系列</b></label>
+    <nav id="children" aria-label="breadcrumb">
+      {% for skill_type in skill_type_list %}
+        <ol class="breadcrumb" id="{{skill_type}}" data-val="{{skill_type}}" style="display: none;">
+          {% for skill in skill_list|dict:skill_type %}
+            <li class="breadcrumb-item">
+              <label>
+                <input type="checkbox" name="skill_kind" id={{skill.name}} value={{skill.name}}
+                    {{skill.name|skill_checked:request.GET}}>{{skill.name}}
+              </label>
+            </li>
+          {% endfor %}
+        </ol>
+      {% endfor %}
+    </nav>
+  </div>
+</div>
+
+<!-- 全部非表示にしておいて、チェックに応じて表示を切り替える -->
+<!-- 非表示時にチェックを外す -->
+<div class="form-group" id="select_active_skill">
+  <label><b>選択スキル: [<span id="num_selected_skill">0</span>]</b></label>
+  {% for skill in skill_detail %}
+    <div class="form-group select_active_skill" id="select_active_skill_{{skill}}" style="display: none;">
+      <label>
+        {{skill}}
+        <button type="button" class="close" onclick='DelActiveSkillSelect("{{skill}}");' aria-label="取り消し">
+          &times;
+        </button>
+      </label>
+      <div class="form-group">
+      {% for ac in skill_detail|dict:skill %}
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="{{ac}}" name="{{skill}}" class="custom-control-input">
+          <label class="custom-control-label" for="{{ac}}">{{ac}}</label>
+        </div>
+      {% endfor %}
+      </div>
+
+    </div>
+  {% endfor %}
+</div>

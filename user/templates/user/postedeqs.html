@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}マイページ-投稿一覧-{% endblock %}
+{% block content %}
+  <div class="card card-default my-4">
+    <h5 class="card-header">
+        {{user.name}}さんが投稿した装備
+    </h5>
+    {% if user.postedeqs.all %}
+      {% for eq in user.postedeqs.all %}
+      <div class="mb-4">
+        {% include "posteq/eq_card.html" %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="card-body">
+        何も投稿されていません
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

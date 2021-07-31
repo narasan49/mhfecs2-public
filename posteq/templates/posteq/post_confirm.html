@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% block title %}MHF装備情報集約システム-確認ページ{% endblock %}
+{% block content %}
+<p class="my-4">以下の内容でよろしければ送信ボタンを押してください。修正する場合はブラウザの戻るボタンを押してください。</p>
+<div class="card my-4">
+  <div class="card-header p-0">
+    <ul class="nav nav-tabs card-header-tabs m-0">
+      <li class="nav-item">
+        <a href="#eqs{{eq.id}}" id="eqs{{eq.id}}-tab" class="nav-link active" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">武具</a>
+      </li>
+      <li class="nav-item">
+        <a href="#jewels{{eq.id}}" id="jewels{{eq.id}}-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">珠</a>
+      </li>
+      <li class="nav-item">
+        <a href="#skills{{eq.id}}" id="skills{{eq.id}}-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">スキル[{{skill_num}}]</a>
+      </li>
+      <li class="nav-item">
+        <a href="#others{{eq.id}}" id="others{{eq.id}}-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">コメント等</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body tab-content p-0">
+    <div id="eqs{{eq.id}}" class="tab-pane active" role="tabpanel" aria-labelledby="eqs{{eq.id}}-tab">
+      <ul class="list-group">
+        {% for wepi in wep %}
+          <li class="list-group-item">{{wepi.data.name}}</li>
+        {% endfor %}
+        {% for eq in eqs %}
+          <li class="list-group-item">{{eq.data.name}}</li>
+        {% endfor %}
+        {% for cuff, num in cuffs.items %}
+          <li class="list-group-item">{{cuff}}×{{num}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div id="jewels{{eq.id}}" class="tab-pane" role="tabpanel" aria-labelledby="jewels{{eq.id}}-tab">
+      <ul class="list-group">
+        {% for jewel, num in jewels.items %}
+          <li class="list-group-item">{{jewel}}×{{num}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div id="skills{{eq.id}}" class="tab-pane" role="tabpanel" aria-labelledby="skills{{eq.id}}-tab">
+      <li class="list-group-item bg-light">自動発動スキル</li>
+      <li class="list-group-item">{{senyuskill_str}}</li>
+      <li class="list-group-item bg-light">辿異スキル</li>
+      <li class="list-group-item">{{teniskill_str}}</li>
+      <li class="list-group-item bg-light">発動スキル</li>
+      <li class="list-group-item">{{skill_str}}</li>
+    </div>
+    <div id="others{{eq.id}}" class="tab-pane" role="tabpanel" aria-labelledby="others{{eq.id}}-tab">
+      <li class="list-group-item bg-light">タグ</li>
+      <li class="list-group-item">{{tag_str}}</li>
+      <li class="list-group-item bg-light">コメント</li>
+      <li class="list-group-item">{{comment}}</li>
+    </div>
+  </div>
+</div>
+
+<form class="my-4" action="{% url 'posteq:post_register' %}" method="post">
+  <input type="hidden" value={{eqdata}} name="eqdata">
+  {% csrf_token %}
+  <input type="submit" value="送信" class="btn btn-primary"/>
+</form>
+{% endblock %}

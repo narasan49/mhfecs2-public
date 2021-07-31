@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}リンク{% endblock %}
+{% block content %}
+<h3 class="text-center">リンク/<a href="{% url 'user:user_links' %}">ユーザーリンク</a></h3>
+<div class="card card-default my-4">
+  <h5 class="card-header">
+    <a href="http://ferias.life.coocan.jp/" target=”_blank”>MHF猟団FreeDomの小部屋</a>
+  </h5>
+  <div class="card-body">
+    武具データ、武具の強化素材、素材の入手方法、有益な小ネタなど、
+    MHFに関する様々な情報を取り扱っています。
+    手動のスキルシミュレータも直観的に使いやすく便利です。
+    やや辿りにくいですが<a href="http://ferias.life.coocan.jp/bougu/sigil.htm" target=”_blank”>シジルの排出確率</a>といった情報もあります。
+  </div>
+</div>
+<div class="card card-default my-4">
+  <h5 class="card-header">
+    <a href="http://hiroaki362.hatenablog.com/" target=”_blank”>開発日誌＠びゅわ置き場</a>
+  </h5>
+  <div class="card-body">
+    MHFにおいて装備を組むのに欠かせないスキルシミュレータ開発者のブログ。
+    シミュレータの最新版や更新情報が掲載されています。
+    MHFプレイヤーのほとんどがこのツールのお世話になっていることでしょう。
+  </div>
+</div>
+<div class="card card-default my-4">
+  <h5 class="card-header">
+    <a href="http://capcir.blog.fc2.com/" target=”_blank”>MHF-Z カプ畜チルカの【吹き専ですが何か？】</a>
+  </h5>
+  <div class="card-body">
+    MHFの攻略に役立つ情報を提供してくれるブログ。
+    毎週期限が近いイベントやキャンペーンをリマインドしてくれるため、やり忘れ防止になります。
+    また、秘伝珠作成に必要な紙やレア素材の一覧、鍋秘伝に必要なHC素材数、道Pの計算、カンストしないためのMM進度の計算など・・
+    様々なツールを作成されています。
+  </div>
+</div>
+<div class="card card-default my-4">
+  <h5 class="card-header">
+    <a href="http://bake2sa.blog.fc2.com/" target=”_blank”>MHF-ZZ検証結果、データ置き場＠赤×屋</a>
+  </h5>
+  <div class="card-body">
+    MHFの仕様に関する検証を行っているブログ。
+    各武器種のモーション値やスキルの仕様などとても参考になります。
+    ダメージシミュレータは効率的な狩りに不可欠です。
+  </div>
+</div>
+<div class="card card-default my-4">
+  <h5 class="card-header">
+    <a href="http://mhfequip.adam.ne.jp/wiki/index.php" target=”_blank”>MHF-Zの装備画像Wiki</a>
+  </h5>
+  <div class="card-body">
+    装備画像のwikiです。外装防具が増えた昨今、作る前に見た目を一覧で確認できるのは便利ですね。画像の募集が開始されたら内容が充実してくるでしょう。
+  </div>
+</div>
+<!-- <div class="card card-default my-4">
+  <h5 class="card-header">
+    <a href="" target=”_blank”></a>
+  </h5>
+  <div class="card-body">
+
+  </div>
+</div> -->
+{% endblock %}

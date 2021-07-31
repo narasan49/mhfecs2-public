@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja" class="h-100">
+{% load static %}
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="モンスターハンターフロンティア(MHF)の装備共有サイトです。
+  ユーザーが投稿した装備をデータべス化して公開しています。">
+
+  <script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/clipboard.min.js' %}"></script>
+
+  <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+  <script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="{% static 'posteq/js/eq_card.js' %}"></script>
+  <script type="text/javascript" src="{% static 'user/js/logout.js' %}"></script>
+  <script type="text/javascript" src="{% static 'user/js/follow.js' %}"></script>
+</head>
+<body class="d-flex flex-column h-100">
+<main role="main" class="flex-shrink-0">
+<div class="container">
+{% include "posteq/menu.html" %}
+{% block content %}{% endblock %}
+
+</div>
+</main>
+
+<footer class="footer mt-auto py-3 bg-info">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-info">
+        <li class="breadcrumb-item"><a class="text-light" href="{% url 'user:terms' %}">利用規約</a></li>
+        <li class="breadcrumb-item"><a class="text-light" href="{% url 'user:policy' %}">プライバシーポリシー</a></li>
+      </ol>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

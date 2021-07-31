@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}MHF装備情報集約システム-フォロー-{% endblock %}
+{% block content %}
+  <h5>
+    {{user.name}}さんがフォローしたユーザー
+  </h5>
+  <div class="card-columns my-4">
+    {% if user.follow.all %}
+      {% for u in user.follow.all %}
+        {% include "user/user_card.html" %}
+      {% endfor %}
+    {% else %}
+        誰もフォローしていません
+    {% endif %}
+  </div>
+{% endblock %}

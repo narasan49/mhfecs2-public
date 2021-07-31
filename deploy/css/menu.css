@@ -1,0 +1,39 @@
+.fixed {
+position: fixed;
+top: 0;
+width: 100%;
+}
+
+#menu {
+  list-style: none;
+  background-color: rgba(255,255,255,0.7);
+}
+#menu li {
+  width: 140px;
+  border-radius: 10px;
+	margin: 4px 0px;
+  text-align: center;
+  background-color: rgba(0,255,255,0.7);
+  display: inline-block;
+}
+#menu li a {
+  text-decoration: none;
+  padding:2px 2px 2px 2px;
+	margin:4px;
+  display: block;
+}
+#menu ul {
+  display: none;
+  margin: 0px;
+  padding: 0px;
+  position: absolute;
+}
+#menu li.main a:hover {
+  border-radius: 10px;
+  background-color: #ffdddd;
+  color: #dd0000;
+}
+
+#menu li.main:hover ul {
+  display: block;
+}

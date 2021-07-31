@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% block title %}MHF装備情報集約システム-投稿ページ-クリップ{% endblock %}
+{% block content %}
+{% if form.non_field_errors %}
+  {{form.non_field_errors}}
+{% endif %}
+
+{% for field in form %}
+  {% if field.errors %}
+    {{ field.errors }}
+  {% endif %}
+{% endfor %}
+<head>
+  <script type="text/javascript" src="{% static 'posteq/js/post_page.js' %}"></script>
+</head>
+
+<form id ="post_eq" action="{% url 'posteq:clip_to_confirm' %}" method="post">
+  <div class="form-group row">
+    <label class="col-lg-3 col-form-label">お名前(公開されます)</label>
+    <div class="col-lg-3">
+      {% if loggedin %}
+      <input type="text" class="form-control" name="name" value="{{own.name}}" readonly>
+      <input type="hidden" name="posted_user_id" value="{{own.id}}">
+      {% else %}
+        <input type="text" class="form-control" name="name" autocomplete="on" value="">
+      {% endif %}
+    </div>
+    {% if not loggedin %}
+      <div class="text-danger col-lg-3">ログインしていません</div>
+    {% endif %}
+  </div>
+  <div class="form-group row">
+    <label class="col-lg-3 col-form-label">*武器種選択</label>
+    <div class="col-lg-3">
+      <select class="form-control" name="wep_kind">
+        <option value="" selected>選択してください</option>
+        {% for wep in wepkind_list %}
+          <option value={{wep.name}}
+              {{wep.name|wepkind_selected:request.GET}}
+              >{{wep.name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>装備クリップの貼り付け</label>
+    <textarea class="form-control" rows="10" name="clip">{{ form.clip.value }}</textarea>
+  </div>
+  <div class="form-group">
+    <label>コメント(400文字以内)</label>
+    <textarea class="form-control" rows="5" name="comment">{{ form.comment.value }}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="taglist">タグの選択</label>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb" id="taglist">
+        {% for tag in tag_list %}
+          <li class="breadcrumb-item">
+            <label>
+              <input type="checkbox" name="checked_tags" value={{tag.name}} id="tag{{tag.id}}"
+                {{tag.name|tag_checked:request.GET}}>{{tag.name}}
+            </label>
+          </li>
+        {% endfor %}
+      </ol>
+    </nav>
+    {% csrf_token %}
+    <input type="submit" value="投稿内容の確認" class="btn btn-primary"/>
+    <input type="reset" value="リセット" class="btn btn-danger"/>
+  </div>
+</form>
+{% endblock %}

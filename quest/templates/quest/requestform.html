@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% block title %}MHF装備情報集約システム-投稿依頼{% endblock %}
+{% block content %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'posteq/css/skill_select.css' %}" />
+  <script type="text/javascript" src="{% static 'posteq/js/skill_select.js' %}"></script>
+</head>
+
+<form id="requestform" name="post" action="" method="post">
+  {% include "skill_select_active.html" %}
+
+  <div class="form-check">
+    <label class="form-check-label">
+      <input class="form-check-input" type="checkbox" name="if_condition_on">条件指定
+    </label>
+  </div>
+
+  <div class="form-group">
+    <label for="request_text">依頼文</label>
+    <textarea class="form-control" id="request_text" rows="8" name="request_text"></textarea>
+  </div>
+  {% csrf_token %}
+  <button id="submitrequest" type="submit" class="btn btn-primary">送信</button>
+</form>
+{% endblock %}

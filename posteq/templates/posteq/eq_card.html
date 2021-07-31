@@ -1,0 +1,104 @@
+{% load static %}
+<div class="card my-0" id="card{{eq.id}}">
+  <div class="card-header p-0">
+    <h6 class="text-center">{{eq.wep_kind.name}} (投稿者:{% if eq.posted_user %}<a href="{% url 'user:mypage' eq.posted_user.id %}">{{eq.posted_user.name}}</a>{% else %}{% if eq.posted_user_name %}{{eq.posted_user_name}}{% endif %}{% endif %}さん)</h6>
+    <ul class="nav nav-tabs card-header-tabs m-0">
+      <li class="nav-item">
+        <a href="#eqs{{eq.id}}" id="eqs{{eq.id}}-tab" class="nav-link active" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">武具</a>
+      </li>
+      <li class="nav-item">
+        <a href="#jewels{{eq.id}}" id="jewels{{eq.id}}-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">珠</a>
+      </li>
+      <li class="nav-item">
+        <a href="#skills{{eq.id}}" id="skills{{eq.id}}-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">スキル[{{eq.data.Nskill}}]</a>
+      </li>
+      <li class="nav-item">
+        <a href="#others{{eq.id}}" id="others{{eq.id}}-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">コメント等</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body tab-content p-0">
+      <div id="eqs{{eq.id}}" class="tab-pane active" role="tabpanel" aria-labelledby="eqs{{eq.id}}-tab">
+        <ul class="list-group">
+          <li class="list-group-item">{{eq.wep_data.data.name}}</li>
+          <li class="list-group-item">{{eq.head_data.data.name}}</li>
+          <li class="list-group-item">{{eq.body_data.data.name}}</li>
+          <li class="list-group-item">{{eq.arm_data.data.name}}</li>
+          <li class="list-group-item">{{eq.wst_data.data.name}}</li>
+          <li class="list-group-item">{{eq.leg_data.data.name}}</li>
+          <ul class="list-group">
+            {% for cuff in eq.cuff_data.all %}
+              <li class="list-group-item">{{cuff.cuff_data.data.name}}×{{cuff.num}}</li>
+            {% endfor %}
+          </ul>
+        </ul>
+      </div>
+      <div id="jewels{{eq.id}}" class="tab-pane" role="tabpanel" aria-labelledby="jewels{{eq.id}}-tab">
+        <ul class="list-group">
+          {% for jewel in eq.jewel_data.all %}
+            <li class="list-group-item">{{jewel.jewel_data.data.name}}×{{jewel.num}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div id="skills{{eq.id}}" class="tab-pane" role="tabpanel" aria-labelledby="skills{{eq.id}}-tab">
+        <li class="list-group-item bg-light">自動発動スキル</li>
+        <li class="list-group-item">{{eq.data.senyuskill_str}}</li>
+        <li class="list-group-item bg-light">辿異スキル</li>
+        <li class="list-group-item">{{eq.data.teniskill_str}}</li>
+        <li class="list-group-item bg-light">発動スキル</li>
+        <li class="list-group-item">{{eq.data.skill_str}}</li>
+      </div>
+      <div id="others{{eq.id}}" class="tab-pane" role="tabpanel" aria-labelledby="others{{eq.id}}-tab">
+        <li class="list-group-item bg-light">投稿日時</li>
+        <li class="list-group-item">{{eq.pos_date}}</li>
+        <li class="list-group-item bg-light">使用スロット:{{eq.data.Nslot}}</li>
+        <li class="list-group-item">極ラヴィ珠:{{eq.data.Nkiwami}}, 真秘伝珠:{{eq.data.Nshin}}, 祭珠:{{eq.data.Nfes}}, イベント珠:{{eq.data.Nevent}}</li>
+        <li class="list-group-item bg-light">タグ</li>
+        <li class="list-group-item">{{eq.data.tag_str}}</li>
+        <li class="list-group-item bg-light">コメント</li>
+        <li class="list-group-item">{{eq.comment}}</li>
+      </div>
+  </div>
+  <div class="card-footer p-0 bg-white">
+    {% if not request.path == "/tweet" %}
+      <table class="table options m-0">
+        <tr>
+          <th id="Niine{{eq.id}}">{{eq.good}}</th>
+          <td>
+            <a class="iine" id="iine{{eq.id}}" href="{% url 'posteq:like' eq.id %}">
+              <img class="icon_tip" src="{% static 'posteq/images/katsuai.png' %}" width="40" height="40"
+              style="border-radius:20px;" alt="いいね" data-toggle="tooltip" title="いいね">
+            </a>
+          </td>
+          <td>
+            <form class="saveeq" action="{% url 'posteq:save_eq' %}" method="post" id="saveeq_card{{eq.id}}">
+              {% csrf_token %}
+              <input type="hidden" name="eq_id" value="{{eq.id}}">
+              {% if loggedin %}
+                <input id="save_icon{{eq.id}}" type="image"
+                src="{% static 'posteq/images/itembox_not_saved.png' %}" width="40" height="40"
+                alt="保存する" data-toggle="tooltip" title="保存する">
+              {% elif eq in own.savedeqs.all %}
+                <input id="save_icon{{eq.id}}" type="image"
+                src="{% static 'posteq/images/itembox_saved.png' %}" width="40" height="40"
+                alt="保存済み" data-toggle="tooltip" title="保存済み">
+              {% else %}
+                <img class="icon_tip"
+                src="{% static 'posteq/images/itembox_close.png' %}" width="40" height="40"
+                alt="保存するにはログインが必要です。" data-toggle="tooltip" title="保存するにはログインが必要です。">
+              {% endif %}
+            </form>
+          </td>
+          <td>
+            <form class="save_clip" action="{% url 'posteq:save_to_clip' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="eq_id" value="{{eq.id}}">
+              <input type="image" src="{% static 'posteq/images/clip.png' %}" width="40" height="40"
+              alt="clip" data-toggle="tooltip" title="クリップボードに保存">
+            </form>
+          </td>
+        </tr>
+      </table>
+    {% endif %}
+  </div>
+  </div>

@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% block title %}MHF装備情報集約システム-投稿ページ{% endblock %}
+{% block content %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'posteq/css/post_page.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'posteq/css/skill_select.css' %}" />
+  <script type="text/javascript" src="{% static 'posteq/js/post_page.js' %}"></script>
+  <script type="text/javascript" src="{% static 'posteq/js/skill_select.js' %}"></script>
+</head>
+
+<form id="skill_query" action="{% url 'posteq:skill_query' %}" method="post">
+  <div class="form-group row">
+    <label class="col-lg-3 col-form-label">お名前(公開されます)</label>
+    <div class="col-lg-3">
+      {% if loggedin %}
+      <input type="text" class="form-control" name="name" value="{{own.name}}" readonly>
+      <input type="hidden" name="posted_user_id" value="{{own.id}}">
+      {% else %}
+        <input type="text" class="form-control" name="name" autocomplete="on" value="">
+      {% endif %}
+    </div>
+    {% if not loggedin %}
+      <div class="text-danger col-lg-3">ログインしていません</div>
+    {% endif %}
+  </div>
+
+  {% include "posteq/skill_select.html" %}
+  <!-- 辿異スキル検索 -->
+  <div class="form-group">
+    <label><b>辿異スキル</b></label>
+    <nav id="teni" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        {% for teniskill in teniskill_list %}
+          <li class="breadcrumb-item">
+            <label>
+              <input type="checkbox" name="teniskill" value={{teniskill.name}}>
+              {{teniskill.name}}
+            </label>
+          </li>
+        {% endfor %}
+      </ol>
+    </nav>
+  </div>
+
+  <!-- その他除外条件指定 -->
+  <label><b>その他条件</b></label>
+  <div class="form-row">
+    <div class="col-md-3 mb-3 mx-2 bg-light rounded">
+      <label><b>防具種別</b></label>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input" type="checkbox" value="辿異防具" name="eq_class" checked>辿異防具
+        </label>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input" type="checkbox" value="遷悠防具" name="eq_class" checked>遷悠防具
+        </label>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input" type="checkbox" value="その他G級防具" name="eq_class" checked>その他G級防具
+        </label>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3 mx-2 bg-light rounded">
+      <label><b>辿異防具</b></label>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input" type="radio" value="ZX" name="teni_level">ZX, ZPのみ
+        </label>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input" type="radio" value="ZY" name="teni_level" checked>ZY以下も含む
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- スキル情報をajaxで送信。スキル一致数を調べる -->
+  {% csrf_token %}
+  <!-- <button id="send_query" type="submit" class="btn btn-primary">スキル決定</button> -->
+  <input id="send_query" type="submit" value="スキル決定" class="btn btn-primary"/>
+</form>
+
+<form id="post_eq" action="{% url 'posteq:post_to_confirm' %}" method="post">
+  <div class="text-center">
+  <label><h5>検索結果</h5></label>
+  </div>
+  <div class="card mb-4">
+    <div class="card-header p-0">
+      <ul class="nav nav-tabs card-header-tabs m-0">
+        <li class="nav-item">
+          <a href="#eq-pane-wep" id="eq-pane-wep-tab" class="nav-link active" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">武</a>
+        </li>
+        <li class="nav-item">
+          <a href="#eq-pane-head" id="eq-pane-head-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">頭</a>
+        </li>
+        <li class="nav-item">
+          <a href="#eq-pane-body" id="eq-pane-body-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">胴</a>
+        </li>
+        <li class="nav-item">
+          <a href="#eq-pane-arm" id="eq-pane-arm-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">腕</a>
+        </li>
+        <li class="nav-item">
+          <a href="#eq-pane-wst" id="eq-pane-wst-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">腰</a>
+        </li>
+        <li class="nav-item">
+          <a href="#eq-pane-leg" id="eq-pane-leg-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="home" aria-selected="true">脚</a>
+        </li>
+      </ul>
+    </div>
+    <div class="card-body tab-content p-0">
+      <div id="eq-pane-wep" class="tab-pane active" role="tabpanel" aria-labelledby="eq-pane-wep-tab">
+        <div class="card-body p-0">
+          <div class="form-row">
+            <span class="col-6">スキル一致数:<span id="wepSlideVal">0</span></span>
+            <input id="wepSlide" type="range" class="custom-range col-6" min="0" max="0" step="1" value="0"/>
+          </div>
+          <div class="res_query border" id="wep_queried">
+            {% for wep in wepdata_list %}
+              <div class="form-check">
+                <label class="form-check-label">
+                  {% if wep.data.name == "スロット3武器" %}
+                  <input type="radio" value="{{wep.data.name}}" id="wep{{wep.id}}" name="wep" class="form-check-input wep candidate_eqs" data-num="0" checked>{{wep.data.name}}
+                  {% else %}
+                  <input type="radio" value="{{wep.data.name}}" id="wep{{wep.id}}" name="wep" class="form-check-input wep candidate_eqs" data-num="0">{{wep.data.name}}
+                  {% endif %}
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div id="eq-pane-head" class="tab-pane" role="tabpanel" aria-labelledby="eq-pane-head-tab">
+        <div class="card-body p-0" id="queried_eqs">
+          <div class="form-row">
+            <span class="col-6">スキル一致数:<span id="headSlideVal">1</span></span>
+            <input id="headSlide" type="range" class="custom-range col-6" min="1" max="5" step="1" value="1"/>
+          </div>
+          <div class="res_query border" id="head_queried">
+          </div>
+        </div>
+      </div>
+      <div id="eq-pane-body" class="tab-pane" role="tabpanel" aria-labelledby="eq-pane-body-tab">
+        <div class="card-body p-0">
+          <div class="form-row">
+            <span class="col-6">スキル一致数:<span id="bodySlideVal">1</span></span>
+            <input id="bodySlide" type="range" class="custom-range col-6" min="1" max="5" step="1" value="1"/>
+          </div>
+          <div class="res_query border" id="body_queried">
+          </div>
+        </div>
+      </div>
+      <div id="eq-pane-arm" class="tab-pane" role="tabpanel" aria-labelledby="eq-pane-arm-tab">
+        <div class="card-body p-0">
+          <div class="form-row">
+            <span class="col-6">スキル一致数:<span id="armSlideVal">1</span></span>
+            <input id="armSlide" type="range" class="custom-range col-6" min="1" max="5" step="1" value="1"/>
+          </div>
+          <div class="res_query border" id="arm_queried">
+          </div>
+        </div>
+      </div>
+      <div id="eq-pane-wst" class="tab-pane" role="tabpanel" aria-labelledby="eq-pane-wst-tab">
+        <div class="card-body p-0">
+          <div class="form-row">
+            <span class="col-6">スキル一致数:<span id="wstSlideVal">1</span></span>
+            <input id="wstSlide" type="range" class="custom-range col-6" min="1" max="5" step="1" value="1"/>
+          </div>
+          <div class="res_query border" id="wst_queried">
+          </div>
+        </div>
+      </div>
+      <div id="eq-pane-leg" class="tab-pane" role="tabpanel" aria-labelledby="eq-pane-leg-tab">
+        <div class="card-body p-0">
+          <div class="form-row">
+            <span class="col-6">スキル一致数:<span id="legSlideVal">1</span></span>
+            <input id="legSlide" type="range" class="custom-range col-6" min="1" max="5" step="1" value="1"/>
+          </div>
+          <div class="res_query border" id="leg_queried">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer p-0 bg-white">
+      <ul class="list-group selected_eqs">
+        <!-- <li class="list-group-item p-1" id="list_selected_wep">スロット3武器</li>
+        <li class="list-group-item p-1" id="list_selected_head"></li>
+        <li class="list-group-item p-1" id="list_selected_body"></li>
+        <li class="list-group-item p-1" id="list_selected_arm"></li>
+        <li class="list-group-item p-1" id="list_selected_wst"></li>
+        <li class="list-group-item p-1" id="list_selected_leg"></li> -->
+      </ul>
+    </div>
+  </div>
+  <div class="card card-default my-4">
+    <h5 class="card-header">
+        カフ
+    </h5>
+      <div class="card-body p-0">
+        <div class="form-row">
+          <span class="col-6">スキル一致数:<span id="cuffSlideVal">1</span></span>
+          <input id="cuffSlide" type="range" class="custom-range col-6" min="0" max="2" step="1" value="1"/>
+        </div>
+        <div class="res_query border" id="cuff_queried">
+        </div>
+        <ul class="list-group list-group-flush p-0">
+          <div class="form-group m-0" id="selected_cuff">
+          </div>
+        </ul>
+      </div>
+  </div>
+  <div class="card card-default my-4">
+    <h5 class="card-header">
+        装飾品
+    </h5>
+    <div class="card-body p-0">
+      <div class="form-row">
+        <span class="col-6">スキル一致数:<span id="jewelSlideVal">1</span></span>
+        <input id="jewelSlide" type="range" class="custom-range col-6" min="1" max="4" step="1" value="1"/>
+      </div>
+      <div class="res_query border" id="jewel_queried">
+      </div>
+    </div>
+    <ul class="list-group list-group-flush p-0">
+      <div class="form-group m-0" id="selected_jewel">
+      </div>
+    </ul>
+  </div>
+  <div class="form-group">
+    <label>コメント(400文字以内)</label>
+    <textarea class="form-control" rows="5" name="comment"></textarea>
+  </div>
+  <div class="form-group">
+    <label for="taglist">タグの選択</label>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb" id="taglist">
+        {% for tag in tag_list %}
+          <li class="breadcrumb-item">
+            <label>
+              <input type="checkbox" name="tags" value={{tag.name}} id="tag{{tag.id}}"
+                {{tag.name|tag_checked:request.GET}}>{{tag.name}}
+            </label>
+          </li>
+        {% endfor %}
+      </ol>
+    </nav>
+  </div>
+  {% csrf_token %}
+  <input type="submit" value="送信" class="btn btn-primary"/>
+</form>
+
+{% endblock %}

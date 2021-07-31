@@ -1,0 +1,23 @@
+{% load custom_filters %}
+<div class="form-row align-items-center" id="info">
+  <div class="form-group col-auto">
+    <select class="form-control" name="additional_kind">
+      <option value="" selected>選択してください</option>
+      {% for kind in info_kinds %}
+        <option value={{kind}} {{ad.kind|selected2:kind}}>{{kind}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  が
+  <div class="form-group col-auto">
+    <input type="number" class="form-control" name="additional_num" value="{{ad.num}}" min="0" max="19" step="1">
+  </div>
+  個
+  <div class="form-group col-auto">
+  <select class="form-control" name="additional_cond">
+    {% for cond in info_conds %}
+      <option value={{cond}} {{ad.cond|selected2:cond}}>{{cond}}</option>
+    {% endfor %}
+  </select>
+  </div>
+</div>

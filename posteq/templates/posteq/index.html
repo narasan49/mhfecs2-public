@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}MHF装備情報集約システム{% endblock %}
+{% block content %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'posteq/css/index.css' %}" />
+</head>
+
+<h1 class="d-none d-lg-block"">
+  MHF装備情報集約システム
+</h1>
+<h3 class="d-lg-none">
+  MHF装備情報集約システム
+</h3>
+
+<h2 class="badge-pill">
+  更新履歴
+</h2>
+<div class="hist">
+  <div class="row border mw-100 m-0">
+    <div class="col-2 border font-weight-bold px-0 text-center">
+      日時
+    </div>
+    <div class="col border font-weight-bold px-0 text-center">
+      更新内容
+    </div>
+  </div>
+  {% if hist_list %}
+    {% for hist in hist_list %}
+      {% if hist.datver %}
+        <div class="row border mw-100 m-0">
+          <div class="date col-2 border py-1 px-0 text-center">
+            <span class="d-none d-lg-block">{{hist.date.date}}</span><span class="d-lg-none">{{hist.date.month}}/{{hist.date.day}}</span>
+          </div>
+          <div class="content datver col border py-1">
+            データベースを{{hist.datver}}に更新
+          </div>
+        </div>
+      {% endif %}
+      {% if hist.errors %}
+        <div class="row border mw-100 m-0">
+          <div class="date col-2 border py-1 px-0 text-center">
+            <span class="d-none d-lg-block">{{hist.date.date}}</span><span class="d-lg-none">{{hist.date.month}}/{{hist.date.day}}</span>
+          </div>
+          <div class="content errors col border py-1">
+            {{hist.errors}}
+          </div>
+        </div>
+      {% endif %}
+      {% if hist.others %}
+        <div class="row border mw-100 m-0">
+          <div class="date col-2 border py-1 px-0 text-center">
+            <span class="d-none d-lg-block">{{hist.date.date}}</span><span class="d-lg-none">{{hist.date.month}}/{{hist.date.day}}</span>
+          </div>
+          <div class="content others col border py-1">
+            {{hist.others}}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+</div>
+
+<h2 class="badge-pill">
+  このサイトについて
+</h2>
+<p>
+  ここはモンスターハンターフロンティア(MHF)の装備をMHFユーザー同士で共有するためのサイトです。
+  それぞれのMHFユーザーが考えた装備の組み合わせを投稿してもらうことでデータベース化し、自由に閲覧できるようにします。
+  <a href="{% url 'user:login_create' %}">会員登録</a>することで投稿履歴を確認できたり、他の人の投稿を保存することができるようになります。
+  ご意見・ご要望ございましたらお気軽に下記の宛先にご連絡ください。
+  不具合を発見された場合も報告してくださると助かります。
+  当サイトはリンクフリーです。
+</p>
+<p>
+  E-mail: narasan49_at_gmail.com, Twitter: naraMHF
+</p>
+<p class="text-center font-weight-bold">
+  装備の保存場所として利用するもよし、
+  自慢の装備をお披露目するもよし、
+  初心者のための装備を投稿するもよし
+</p>
+<h2 class="badge-pill">
+  使い方
+</h2>
+<h3>
+  閲覧編
+</h3>
+<ol>
+  <li value="1"><b>絞り込み検索</b></li>
+    武器種・スキル・タグに条件をつけることで、絞り込み検索ができます。
+  <li value="2"><b>検索結果</b></li>
+    検索条件にあった装備が表示されます。使用した装備品、装飾品、スキルカフと発動スキル、投稿者のコメントが確認できます。
+    <ul>
+      <li class="mb-4">
+        <img src="{% static 'posteq/images/katsuai.png' %}" width="40" height="40" style="border-radius:20px;" alt="いいね">
+        :いいねボタン
+      </li>
+      <li class="mb-4">
+        <img src="{% static 'posteq/images/itembox_not_saved.png' %}" width="40" height="40" alt="保存">
+        :保存ボタン。会員登録することで利用できます。
+      </li>
+      <li><img src="{% static 'posteq/images/clip.png' %}" width="40" height="40" alt="保存">
+        :クリップボタン。装備データをクリップボードにコピーします。
+      </li>
+
+    </ul>
+</ol>
+<h3>
+  投稿編・クリップ貼付
+</h3>
+  <p>ご自身が組んだ装備を実際に投稿してこのサイトで公開する方法を2通りご紹介します。1つ目は、クリップボードに保存したMHSX2Gでのシミュ結果を貼り付けることで投稿する方法です。</p>
+  <img class="border border-dark mw-100" src="{% static 'posteq/images/instruction_clip.png' %}" border="5"/>
+  <ol>
+    <li value="1"><b>名前入力</b></li>
+      検索時に表示される名前を入力することができます。ログイン時は自動的に入力されます。
+    <li value="2"><b>武器種の選択</b></li>
+      必須項目。武器種を選択します。14武器種の他に剣士汎用、ガンナー汎用という項目もあります。
+    <li value="3"><b>クリップ貼付</b></li>
+      クリップボードに保存した装備情報をそのまま整形等せずに貼り付けてください。
+    <li value="4"><b>コメントの記入</b></li>
+      装備の説明を自由に記入してください。400字以内。
+    <li value="5"><b>タグの選択</b></li>
+      用途・装備の特徴にあったタグを選択してください。検索で見つけやすくなります。追加してほしいタグなどの要望も受け付けています。検討の上、追加します。
+    <li value="6"><b>投稿確認・投稿</b></li>
+      投稿内容の確認ボタンで発動スキル等をチェックします。問題なければ投稿して、操作完了です。リセットボタンで入力内容がクリアされます。
+  </ol>
+
+<h3>
+  投稿編・直接入力
+</h3>
+<p>
+  発動スキルから武具の候補を検索し、その中から選択することで投稿できます。
+</p>
+
+<img class="border border-dark mw-100" src='{% static "posteq/images/instruction_manual_query.png" %}' border="5"/>
+<ol>
+  <li value="1"><b>スキル種別の選択</b></li>
+    スキル種別を選択します。選択後、2番のスキルが表示されます。
+  <li value="2"><b>スキルの選択</b></li>
+    選択したスキルを含む防具を検索します。
+  <li value="3"><b>辿異スキルの選択</b></li>
+    選択されなかった辿異スキルを含む防具を除外します。
+  <li value="4"><b>その他条件の選択</b></li>
+    防具の種別や強化状況について検索範囲を指定します。
+</ol>
+
+<p>
+  検索結果の一例です。
+</p>
+<img class="border border-dark mw-100" src='{% static "posteq/images/instruction_manual_select.png" %}' border="5"/>
+<ol>
+  <li value="1"><b>武具の検索結果</b></li>
+    武具の検索結果を表示します。タブによって部位の切り替えができます。スライドバーを動かすことで、武具に含まれる発動スキルの数が指定できます。
+  <li value="2"><b>カフの検索結果</b></li>
+    カフの検索結果を表示します。選択されたカフは下部に表示され、その個数を選択できます。装飾品についても同様です。
+</ol>
+
+<h2 class="badge-pill">
+  謝辞
+</h2>
+<p>
+  このサイトを作る上でMHSX2Gの開発者である、ひろあき様には装備データの使用を快く認めてくださいました。この場をお借りしてお礼申し上げます。
+</p>
+<!-- <h2 class="badge-pill">
+  当サイトの意義
+</h2>
+<p>
+  MHFはネットゲームの性質上、装備品数やスキルの種類が膨大であり、増え続ける一方です。それに伴って、装備の組み合わせを考える時間も増大していきます。
+  MHFには有志による非常に優秀なスキルシミュレータが存在しており、装備を組みやすい環境が整っていますが、それでも1つの武器種のシミュに半日以上を費やすこともあります。
+  普段あまり使わないような武器種をちょっと触ってみたい、忙しくてスキルシミュに時間を費やせない等、この時間スケールがプレイの足かせとなり得る状況を打破しようというのが目的です。
+  装備を組む楽しさが無くなってしまうことがあるかもしれない一方で、自身の好きな武器種で自慢の装備構成を投稿してみる、といったことにも楽しさを見出していただけたら幸いです。
+  ご意見・ご要望は<a href="mailto:narasan49@gmail.com?subject=【MHF】">こちら</a>から受け付けています。
+  最後に、このサイトを作る上でMHSX2Gの開発者である、ひろあき様には装備データの使用を快く認めてくださいました。この場をお借りしてお礼申し上げます。
+</p> -->
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}ユーザーリンク{% endblock %}
+{% block content %}
+
+<h3 class="text-center"><a href="{% url 'posteq:links' %}">リンク</a>/ユーザーリンク</h3>
+{% for user in SelectedUsers %}
+<div class="card card-default my-4">
+  <h5 class="card-header">
+    <a href={{user.Url}} target=”_blank”>{{user.UrlTitle}}</a>
+  </h5>
+  <div class="card-body">
+    {{user.UrlDescription}}
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

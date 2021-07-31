@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}MHF装備情報集約システム-閲覧{% endblock %}
+{% block content %}
+{% load custom_filters %}
+{% load static %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'posteq/css/post_page.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'posteq/css/skill_select.css' %}" />
+  <script type="text/javascript" src="{% static 'posteq/js/skill_select.js' %}"></script>
+</head>
+<div>
+<h2>検索条件</h2>
+<form method="get" action="" name="filter_form">
+  {% include "posteq/skill_select.html" %}
+
+  <div class="form-group">
+    <label for="taglist"><b>タグ</b></label>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb" id="taglist">
+        {% for tag in tag_list %}
+          <li class="breadcrumb-item">
+            <label>
+              <input type="checkbox" name="checked_tags" value={{tag.name}} id="tag{{tag.id}}"
+                {{tag.name|tag_checked:request.GET}}>{{tag.name}}
+            </label>
+          </li>
+        {% endfor %}
+      </ol>
+    </nav>
+  </div>
+
+  <div class="form-group" id="additional_info">
+    <label><b>その他条件</b><input type="button" id="add_btn" value="＋" class="btn btn-primary rounded-circle p-0" style="width:1.5rem;height:1.5rem;"></label>
+    {% if additional %}
+      {% for ad in additional %}
+        {% include 'posteq/additional_cond.html' %}
+      {% endfor %}
+    {% else %}
+      {% include 'posteq/additional_cond.html' %}
+    {% endif %}
+  </div>
+  <div class="form-group">
+    <label><b>並び順</b></label>
+    <select class="form-control col-auto" name="order">
+      <option value="pub_date" selected
+          {{"pub_date"|order_selected:request.GET}}
+          >新しい順</option>
+      <option value="good"
+          {{"good"|order_selected:request.GET}}
+          >高評価の多い順</option>
+    </select>
+  </div>
+  {% csrf_token %}
+  <input type="submit" value="絞り込み" class="btn btn-primary" />
+</form>
+</div>
+<hr>
+{% if posted_list %}
+    <p class="text-center">{{posted_list.start_index}}-{{posted_list.end_index}}件目を表示中(全{{posted_list.paginator.count}}件)</p>
+    <div>
+    {% for eq in posted_list %}
+      <div class="my-4">
+        {% include "posteq/eq_card.html" %}
+      </div>
+    {% endfor %}
+    </div>
+
+    <div class="text-center">
+      <span>
+        {% if posted_list.has_previous %}
+          <a href="?page=1">&laquo; 最初</a>
+          <a href="?{% paging request posted_list.previous_page_number %}">前</a>
+        {% else %}
+          &laquo; 最初 前
+        {% endif %}
+
+        {% if posted_list.has_next %}
+          <a href="?{% paging request posted_list.next_page_number %}">次</a>
+          <a href="?{% paging request posted_list.paginator.num_pages %}">最後 &raquo;</a>
+        {% else %}
+          次 最後 &raquo;
+        {% endif %}
+      </span>
+    </div>
+{% else %}
+    <p class="center">条件に当てはまる装備はありませんでした。</p>
+{% endif %}
+
+{% endblock %}

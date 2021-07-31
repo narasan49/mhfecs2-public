@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}会員登録/ログイン{% endblock %}
+{% block content %}
+MHF装備情報集約システムに会員登録すると、自身の投稿履歴を確認できたり、他の人の投稿を保存してマイページで確認できるようになります。
+<div class="text-center m-4">
+  <a class="btn btn-primary badge-pill text-center" href="{% url 'user:oauth' %}" role="button">
+    ツイッターで会員登録/ログイン
+  </a>
+</div>
+当サイトの会員登録する場合、<a href="{% url 'user:policy' %}">プライバシーポリシー</a>と<a href="{% url 'user:terms' %}">利用規約</a>に同意したものとみなします。
+{% endblock %}

@@ -1,0 +1,20 @@
+<div class="card card-default my-4 col p-0">
+  <h5 class="card-header">
+      <a class="text-body" href="{% url 'user:mypage' u.id %}">{{u.name}}</a>
+      {% if own and not own.id == u.id%}
+      {% if u in own.follow.all %}
+        <a class="btn btn-primary follow" id="follow{{u.id}}" href="{% url 'user:followuser' u.id %}" role="button">フォロー中</a>
+      {% else %}
+        <a class="btn btn-primary follow" id="follow{{u.id}}" href="{% url 'user:followuser' u.id %}" role="button">フォローする</a>
+      {% endif %}
+      {% endif %}
+  </h5>
+  <div class="card-body">
+    {% if u.self_introduce %}<h5 class="card-title">{{u.self_introduce}}</h5>{% endif %}
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a class="btn btn-primary" href="{% url 'user:postedeqs' u.id %}" role="button">
+          マイセット<span class="badge">{{u.postedeqs.count}}</span>
+        </a>
+    </div>
+  </div>
+</div>

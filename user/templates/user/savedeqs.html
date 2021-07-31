@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}マイページ-保存済み-{% endblock %}
+{% block content %}
+  <div class="card card-default my-4">
+    <h5 class="card-header">
+        {{user.name}}さんが保存した装備
+    </h5>
+    {% if user.savedeqs.all %}
+      {% for eq in user.savedeqs.all %}
+      <div class="mb-4">
+        {% include "posteq/eq_card.html" %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="card-body">
+        何も保存されていません
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

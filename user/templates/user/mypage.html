@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}マイページ{% endblock %}
+
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+<script type="text/javascript" src="{% static 'user/js/mypage.js' %}"></script>
+{% if check_user and own.id == 1 %}
+<div class="card card-default">
+  <h5 class="card-header">
+    リンクURL確認しましょう
+  </h5>
+  <div class="card-body">
+    {% for cu in check_user %}
+      {{cu.name}}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+<div class="card card-default">
+  <h5 class="card-header">
+      {{user.name}}さんのマイページ
+      {% if own and not own.id == user.id%}
+      {% if user in own.follow.all %}
+        <a class="btn btn-primary follow" id="follow{{user.id}}" href="{% url 'user:followuser' user.id %}" role="button">フォロー中</a>
+      {% else %}
+        <a class="btn btn-primary follow" id="follow{{user.id}}" href="{% url 'user:followuser' user.id %}" role="button">フォローする</a>
+      {% endif %}
+      {% endif %}
+  </h5>
+  <div class="card-body">
+    {% if user.self_introduce %}<h5 class="card-title">{{user.self_introduce}}</h5>{% endif %}
+    <div class="btn-group d-none d-lg-flex" role="group" aria-label="Basic example">
+        <a class="btn btn-primary w-100" href="{% url 'user:postedeqs' user.id %}" role="button">
+          マイセット<span class="badge">{{user.postedeqs.count}}</span>
+        </a>
+        <a class="btn btn-primary w-100" href="{% url 'user:savedeqs' user.id %}" role="button">
+          保存済み<span class="badge">{{user.savedeqs.count}}</span>
+        </a>
+        <a class="btn btn-primary w-100" href="{% url 'user:followlist' user.id %}" role="button">
+          フォロー<span class="badge">{{user.follow.count}}</span>
+        </a>
+        <a class="btn btn-primary w-100" href="{% url 'user:followerlist' user.id %}" role="button">
+          フォロワー<span class="badge">{{user.followed.count}}</span>
+        </a>
+    </div>
+    <div class="btn-group d-flex d-lg-none" role="group" aria-label="Basic example">
+        <a class="btn btn-primary w-100" href="{% url 'user:postedeqs' user.id %}" role="button">
+          マイセット<span class="badge">{{user.postedeqs.count}}</span>
+        </a>
+        <a class="btn btn-primary w-100" href="{% url 'user:savedeqs' user.id %}" role="button">
+          保存済み<span class="badge">{{user.savedeqs.count}}</span>
+        </a>
+    </div>
+    <div class="btn-group d-flex d-lg-none" role="group" aria-label="Basic example">
+        <a class="btn btn-primary w-100" href="{% url 'user:followlist' user.id %}" role="button">
+          フォロー<span class="badge">{{user.follow.count}}</span>
+        </a>
+        <a class="btn btn-primary w-100" href="{% url 'user:followerlist' user.id %}" role="button">
+          フォロワー<span class="badge">{{user.followed.count}}</span>
+        </a>
+    </div>
+    <p class="card-text">武器種別投稿数</p>
+    <div class="text-center">
+      <input type="hidden" id="chart_data" value="{{data}}">
+      <input type="hidden" id="chart_labels" value="{{labels|safe}}">
+      <input type="hidden" id="chart_labels_short" value="{{labels_short|safe}}">
+      <canvas class="d-none d-lg-block" id="chart"></canvas>
+      <canvas class="d-lg-none" id="chart_short"></canvas>
+    </div>
+  </div>
+</div>
+{% if user.UrlIfChecked %}
+<div class="card card-default my-4">
+  <h5 class="card-header">
+    <a href={{user.Url}} target=”_blank”>{{user.UrlTitle}}</a>
+  </h5>
+  <div class="card-body">
+    {{user.UrlDescription}}
+  </div>
+</div>
+{% endif %}
+<div class="card card-default my-4" id="latesteq">
+<h5 class="card-header">
+    最新の投稿
+</h5>
+{% if latest %}
+  {% for eq in latest %}
+    {% include "posteq/eq_card.html" %}
+    <div class="card-footer">
+      <a href="{% url 'user:postedeqs' user.id %}">全てを見る<span class="badge badge-primary">{{user.postedeqs.count}}</span></a>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="card-body">
+    何も投稿されていません
+  </div>
+{% endif %}
+</div>
+
+{% endblock content %}

@@ -1,0 +1,8 @@
+.skill_type_select0 {
+  height: 8rem;
+  overflow-y: scroll;
+}
+
+.select_active_skill {
+  background-color: #f5f5f5;
+}

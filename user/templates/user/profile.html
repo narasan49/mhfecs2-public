@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% block title %}MHF装備情報集約システム-会員情報登録ページ{% endblock %}
+{% block content %}
+  <script>
+  $(function () {
+    if ("{{message}}") {
+      $("#submitProfile").prop("disabled", true);
+    }
+
+    // $('#editProfile').on('submit', function(event) {
+    //   console.log($("#edit_name").val());
+    //   alert("aa");
+    //   return false;
+    // });
+  });
+
+
+  </script>
+<h4 class="text-center">会員情報登録ページ</h4>
+{% if message %}
+  {{message}}
+{% endif %}
+<form id="editProfile" name="post" action="" method="post">
+  <div class="form-group">
+    <label for="edit_name">お名前</label>
+    <input type="text" class="form-control" id="edit_name" name="name" size="20" value="{{user.name}}">
+  </div>
+
+  <div class="form-group">
+    <label for="editSelfIntroduction">自己紹介(例：よく使う武器種、普段Fでどんな事をしているか)</label>
+    <textarea class="form-control" id="editSelfIntroduction" rows="8" name="self_introduce">{% if user.self_introduce %}{{user.self_introduce}}{% endif %}</textarea>
+  </div>
+  <div>
+    {% if user.UrlIfChecked == False %}
+      URLや説明文の確認が完了したらリンクに公開されます。
+    {% endif %}
+    {% if user.UrlIfChecked == True %}
+      URLは承認されています。
+    {% endif %}
+  <div>
+  <div class="form-group">
+    <label for="editUrl">URL(ブログやHPなど)</label>
+    <input type="text" class="form-control" id="editUrl" name="Url" value="{% if user.Url %}{{user.Url}}{% endif %}">
+  </div>
+  <div class="form-group">
+    <label for="editUrlTitle">URLのタイトル</label>
+    <input type="text" class="form-control" id="editUrlTitle" name="UrlTitle" value="{% if user.UrlTitle %}{{user.UrlTitle}}{% endif %}">
+  </div>
+  <div class="form-group">
+    <label for="editUrlDescription">URLの説明</label>
+    <textarea class="form-control" id="editUrlDescription" rows="8" name="UrlDescription">{% if user.UrlDescription %}{{user.UrlDescription}}{% endif %}</textarea>
+  </div>
+  <div>
+    *入力いただいたURLはリンクに公開されます。
+    <a href="{% url 'user:user_links' %}">ここ</a>で1度に10件がランダムで表示されます。
+    URLの公開には管理人の承認が必要ですが、webページの内容、説明文が公序良俗に反しない場合は基本的に許可します。
+    承認は手動で行うため、お時間をいただく場合がありますがご了承ください。
+  </div>
+  {% csrf_token %}
+  <button id="submitProfile" type="submit" class="btn btn-primary">送信</button>
+</form>
+{% endblock %}
